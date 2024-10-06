@@ -78,7 +78,7 @@ import { ref } from 'vue'
 import dayjs from 'dayjs'
 import { explain } from './dict'
 import { getLunar } from '../utils/lunarDay'
-import cnchar from 'cnchar';
+// import cnchar from 'cnchar';
 
 
 const columns = [
