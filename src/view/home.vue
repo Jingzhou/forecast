@@ -1,6 +1,6 @@
 <template>
-  <div class='home-page'>
-    <div class='content-wrap'>
+  <div class="home-page">
+    <div class="content-wrap">
       <router-view />
     </div>
     <van-tabbar v-model="active">
@@ -11,8 +11,8 @@
 </template>
 
 <script setup>
-import {ref, watch}from 'vue'
-import {useRoute} from 'vue-router'
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 const active = ref('')
 const route = useRoute()
 watch(
@@ -22,7 +22,6 @@ watch(
   },
   { deep: true, immediate: true }
 )
-
 </script>
 
 <style scoped lang="less">

@@ -1,5 +1,5 @@
 <template>
-  <div class='xiaoliuren-page'>
+  <div class="xiaoliuren-page">
     <van-field
       v-model="typeValue"
       is-link
@@ -8,7 +8,7 @@
       placeholder="选择输入值类型"
       @click="showTypePicker = true"
     />
-    <template v-if='selectedTypeValues === "1"'>
+    <template v-if="selectedTypeValues === '1'">
       <van-field
         v-model="dateValue"
         is-link
@@ -26,36 +26,46 @@
         @click="showTimePicker = true"
       />
     </template>
-    <template v-if='selectedTypeValues === "2"'>
-      <van-field
-        v-model="numberListStr"
-        label="随机数"
-        placeholder="3个或以上的随机数，逗号隔开"
-      />
+    <template v-if="selectedTypeValues === '2'">
+      <van-field v-model="numberListStr" label="随机数" placeholder="3个或以上的随机数，逗号隔开" />
     </template>
-    <template v-if='selectedTypeValues === "3"'>
-      <van-field
-        v-model="hanziListStr"
-        label="汉字"
-        placeholder="3个或以上的汉字"
-      />
+    <template v-if="selectedTypeValues === '3'">
+      <van-field v-model="hanziListStr" label="汉字" placeholder="3个或以上的汉字" />
     </template>
-    <van-field
-      v-model="question"
-      label="问题"
-      placeholder="请输入你想要预测的事情"
-    />
-    <van-button type="primary" block style='margin-top: 8px' @click='submit' :disabled='buttonDisabled'>预测</van-button>
-    <div class='result-wrap' v-if='!!resultData'>
-      <template v-if='selectedTypeValues === "1"'>
-        <div>农历：{{lunarStr}}</div>
+    <van-field v-model="question" label="问题" placeholder="请输入你想要预测的事情" />
+    <van-button
+      type="primary"
+      block
+      style="margin-top: 8px"
+      @click="submit"
+      :disabled="buttonDisabled"
+      >预测</van-button
+    >
+    <div class="result-wrap" v-if="!!resultData">
+      <template v-if="selectedTypeValues === '1'">
+        <div>农历：{{ lunarStr }}</div>
       </template>
-      <div style='margin-top: 4px'>结果：{{resultData.short}}</div>
-      <div style='margin-top: 4px'>释义：{{resultData.paraphrase[0]}}</div>
-      <div style='margin-top: 4px'>口诀：{{resultData.paraphrase[1]}}</div>
-      <div style='margin-top: 4px'>断辞：{{resultData.paraphrase[2]}}</div>
-      <van-button type="primary" block style='margin-top: 4px' @click='unscramble' v-if='!resultData.unscramble'>解读</van-button>
-      <div style='margin-top: 4px' v-if='resultData.unscramble'>结果解读：{{resultData.unscramble}}</div>
+      <div style="margin-top: 4px">结果：{{ resultData.short }}</div>
+      <div style="margin-top: 4px">释义：{{ resultData.paraphrase[0] }}</div>
+      <div style="margin-top: 4px">口诀：{{ resultData.paraphrase[1] }}</div>
+      <div style="margin-top: 4px">断辞：{{ resultData.paraphrase[2] }}</div>
+      <van-button
+        type="primary"
+        block
+        style="margin-top: 4px"
+        @click="unscramble"
+        v-if="!resultData.unscramble"
+        >解读</van-button
+      >
+      <div style="margin-top: 4px" v-if="resultData.unscramble">
+        <div
+          v-for="(item, index) in Object.keys(resultData.unscramble)"
+          :key="index"
+          style="margin-top: 8px; font-weight: bold"
+        >
+          {{ item }}：{{ resultData.unscramble[item] }}
+        </div>
+      </div>
     </div>
     <!--  选择窗口  -->
     <van-popup v-model:show="showTypePicker" round position="bottom">
@@ -75,9 +85,17 @@
       />
     </van-popup>
     <van-popup v-model:show="showTimePicker" round position="bottom">
-      <van-time-picker v-model="selectedTimeValues" title="选择时间" @cancel="showTimePicker = false" @confirm="onConfirmTime"/>
+      <van-time-picker
+        v-model="selectedTimeValues"
+        title="选择时间"
+        @cancel="showTimePicker = false"
+        @confirm="onConfirmTime"
+      />
     </van-popup>
-    <van-overlay :show="showOverlay" style="display: flex; justify-content: center; align-items: center; height: 100%">
+    <van-overlay
+      :show="showOverlay"
+      style="display: flex; justify-content: center; align-items: center; height: 100%"
+    >
       <van-loading size="24px" vertical>解读中...</van-loading>
     </van-overlay>
   </div>
@@ -88,28 +106,27 @@ import { ref, computed } from 'vue'
 import dayjs from 'dayjs'
 import { explain } from './dict'
 import { getLunar } from '../../utils/lunarDay'
-import cnchar from 'cnchar';
+import cnchar from 'cnchar'
 import post from '../../request/post'
-import { showFailToast } from 'vant';
-
+import { showFailToast } from 'vant'
 
 const columns = [
   { text: '日期取数法', value: '1' },
   { text: '数字取数法', value: '2' },
-  { text: '汉字取数法', value: '3' },
-];
+  { text: '汉字取数法', value: '3' }
+]
 
-const typeValue = ref('');
-const dateValue = ref('');
-const timeValue = ref('');
+const typeValue = ref('')
+const dateValue = ref('')
+const timeValue = ref('')
 
-const showTypePicker = ref(false);
-const showDatePicker = ref(false);
-const showTimePicker = ref(false);
+const showTypePicker = ref(false)
+const showDatePicker = ref(false)
+const showTimePicker = ref(false)
 
-const selectedTypeValues = ref([]);
-const selectedDateValues = ref([]);
-const selectedTimeValues = ref([]);
+const selectedTypeValues = ref([])
+const selectedDateValues = ref([])
+const selectedTimeValues = ref([])
 const numberListStr = ref('')
 const hanziListStr = ref('')
 const lunarStr = ref('')
@@ -131,9 +148,9 @@ const buttonDisabled = computed(() => {
 })
 
 const onConfirmType = ({ selectedOptions }) => {
-  showTypePicker.value = false;
+  showTypePicker.value = false
   selectedTypeValues.value = selectedOptions[0].value
-  typeValue.value = selectedOptions[0].text;
+  typeValue.value = selectedOptions[0].text
   resultData.value = undefined
   lunarStr.value = ''
   question.value = ''
@@ -146,15 +163,15 @@ const onConfirmType = ({ selectedOptions }) => {
     const timeList = timeValue.value.split(':')
     selectedTimeValues.value = [timeList[0], timeList[1]]
   }
-};
+}
 
-const onConfirmDate = ({  selectedValues }) => {
+const onConfirmDate = ({ selectedValues }) => {
   dateValue.value = selectedValues.join('-')
   selectedDateValues.value = selectedValues
   showDatePicker.value = false
 }
 
-const onConfirmTime = ({  selectedValues }) => {
+const onConfirmTime = ({ selectedValues }) => {
   timeValue.value = selectedValues.join(':')
   selectedTimeValues.value = selectedValues
   showTimePicker.value = false
@@ -163,26 +180,30 @@ const onConfirmTime = ({  selectedValues }) => {
 const unscramble = () => {
   const data = {
     question: question.value,
-    short: resultData.value.short
+    short: resultData.value.short,
+    paraphrase: resultData.value.paraphrase
   }
   showOverlay.value = true
-  post.gerForecast(data).then(res => {
-    if(res.code === '0') {
-      resultData.value.unscramble = res.message
-    } else {
-      showFailToast('生成失败，稍后重试！');
+  post.gerForecast(data).then(
+    (res) => {
+      if (res.code === '0') {
+        resultData.value.unscramble = JSON.parse(res.data.content)
+      } else {
+        showFailToast('生成失败，稍后重试！')
+      }
+      showOverlay.value = false
+    },
+    () => {
+      showOverlay.value = false
+      showFailToast('生成失败，稍后重试！')
     }
-    showOverlay.value = false
-  }, () => {
-    showOverlay.value = false
-    showFailToast('生成失败，稍后重试！');
-  })
+  )
 }
 
 // 传入数字数组进行预测
 const calculate = (parameters) => {
   let explainIndex = 0
-  parameters.forEach(indexValue => {
+  parameters.forEach((indexValue) => {
     let j = 0
     explainIndex = explainIndex - 1
     while (j < indexValue) {
@@ -211,12 +232,10 @@ const submit = () => {
   }
   if (selectedTypeValues.value === '3') {
     const list = hanziListStr.value.split('')
-    parameters = list.map(str => str.stroke())
+    parameters = list.map((str) => str.stroke())
   }
   calculate(parameters)
-  
 }
-
 </script>
 
 <style scoped lang="less">

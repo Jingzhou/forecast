@@ -7,7 +7,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: { name: 'divination' },
+      redirect: { name: 'xiaoliuren' }
     },
     {
       path: '/xiaoliuren',
@@ -18,7 +18,7 @@ const router = createRouter({
       path: '/divination',
       name: 'divination',
       component: divination
-    },
+    }
   ]
 })
 
